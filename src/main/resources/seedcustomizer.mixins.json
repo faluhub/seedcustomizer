@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.falu.seedcustomizer.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "access.ChunkTicketManagerAccessor",
+    "access.LevelPropertiesAccessor",
+    "access.ServerChunkManagerAccessor",
+
+    "BiomeArrayMixin",
+    "KeyboardMixin",
+    "MinecraftServerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

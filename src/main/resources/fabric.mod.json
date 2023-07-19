@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "seedcustomizer",
+  "version": "${version}",
+  "name": "SeedCustomizer",
+  "description": "A mod that allows you to customise your seed.",
+  "authors": ["falu"],
+  "contact": {
+    "homepage": "https://github.com/FaluHub"
+  },
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["me.falu.seedcustomizer.SeedCustomizer"]
+  },
+  "mixins": ["seedcustomizer.mixins.json"],
+  "accessWidener": "seedcustomizer.accesswidener",
+  "depends": {
+    "minecraft": "1.16.1"
+  }
+}
