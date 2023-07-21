@@ -4,13 +4,8 @@
   "package": "me.falu.seedcustomizer.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "access.ChunkTicketManagerAccessor",
-    "access.LevelPropertiesAccessor",
-    "access.ServerChunkManagerAccessor",
-
-    "BiomeArrayMixin",
     "KeyboardMixin",
-    "MinecraftServerMixin"
+    "ServerWorldMixin"
   ],
   "injectors": {
     "defaultRequire": 1
