@@ -1,1 +1,3 @@
 accessWidener v1 named
+
+accessible field net/minecraft/server/world/ThreadedAnvilChunkStorage loadedChunks Lit/unimi/dsi/fastutil/longs/LongSet;

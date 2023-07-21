@@ -5,6 +5,7 @@ import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.LiteralText;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +26,7 @@ public class KeyboardMixin {
                 if (world != null) {
                     ServerPlayerEntity player = this.client.getServer().getPlayerManager().getPlayer(this.client.player.getUuid());
                     if (player != null) {
-                        ChunkRegenerator.INSTANCE.regenerate(world, player);
+                        world.getServer().submit(() -> ChunkRegenerator.INSTANCE.regenerate(world, player));
                         cir.setReturnValue(true);
                     }
                 }

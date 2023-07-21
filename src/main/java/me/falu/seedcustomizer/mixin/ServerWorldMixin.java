@@ -26,6 +26,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
@@ -39,7 +42,6 @@ public abstract class ServerWorldMixin extends World implements ServerWorldCopyO
     @Shadow @Final private List<Spawner> field_25141;
     @Shadow @Final private boolean field_25143;
     @Unique Executor workerExecutor;
-    @Unique LevelStorage.Session session;
 
     protected ServerWorldMixin(MutableWorldProperties mutableWorldProperties, RegistryKey<World> registryKey, RegistryKey<DimensionType> registryKey2, DimensionType dimensionType, Supplier<Profiler> profiler, boolean bl, boolean bl2, long l) {
         super(mutableWorldProperties, registryKey, registryKey2, dimensionType, profiler, bl, bl2, l);
@@ -48,29 +50,32 @@ public abstract class ServerWorldMixin extends World implements ServerWorldCopyO
     @Inject(method = "<init>", at = @At("TAIL"))
     private void extraVariables(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<World> registryKey, RegistryKey<DimensionType> registryKey2, DimensionType dimensionType, WorldGenerationProgressListener generationProgressListener, ChunkGenerator chunkGenerator, boolean bl, long l, List<Spawner> list, boolean bl2, CallbackInfo ci) {
         this.workerExecutor = workerExecutor;
-        this.session = session;
     }
 
     @Override
-    public ServerWorld seedcustomizer$createCopy() {
-        return new ServerWorld(
-                this.getServer(),
-                this.workerExecutor,
-                this.session,
-                this.worldProperties,
-                this.getRegistryKey(),
-                this.getDimensionRegistryKey(),
-                this.getDimension(),
-                new WorldGenerationProgressListener() {
-                    @Override public void start(ChunkPos spawnPos) {}
-                    @Override public void setChunkStatus(ChunkPos pos, @Nullable ChunkStatus status) {}
-                    @Override public void stop() {}
-                },
-                this.getChunkManager().getChunkGenerator(),
-                this.isDebugWorld(),
-                this.getSeed(),
-                this.field_25141,
-                this.field_25143
-        );
+    public ServerWorld seedcustomizer$createCopy() throws IOException {
+        Path tempDir = Files.createTempDirectory("ChunkRegen");
+        LevelStorage levelStorage = LevelStorage.create(tempDir);
+        try (LevelStorage.Session session = levelStorage.createSession("ChunkRegenTemp")) {
+            return new ServerWorld(
+                    this.getServer(),
+                    this.workerExecutor,
+                    session,
+                    this.worldProperties,
+                    this.getRegistryKey(),
+                    this.getDimensionRegistryKey(),
+                    this.getDimension(),
+                    new WorldGenerationProgressListener() {
+                        @Override public void start(ChunkPos spawnPos) {}
+                        @Override public void setChunkStatus(ChunkPos pos, @Nullable ChunkStatus status) {}
+                        @Override public void stop() {}
+                    },
+                    this.getChunkManager().getChunkGenerator().withSeed(this.getSeed()),
+                    this.isDebugWorld(),
+                    this.getSeed(),
+                    this.field_25141,
+                    this.field_25143
+            );
+        }
     }
 }
