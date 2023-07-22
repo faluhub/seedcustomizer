@@ -7,5 +7,4 @@ import java.io.IOException;
 
 public interface ServerWorldCopyOwner {
     ServerWorld seedcustomizer$createCopy() throws IOException;
-    LevelStorage.Session getSession();
 }

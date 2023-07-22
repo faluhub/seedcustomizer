@@ -4,6 +4,11 @@
   "package": "me.falu.seedcustomizer.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "access.StructuresConfigAccessor",
+
+    "gui.GameMenuScreenMixin",
+
+    "IntegratedServerMixin",
     "KeyboardMixin",
     "ServerWorldMixin"
   ],

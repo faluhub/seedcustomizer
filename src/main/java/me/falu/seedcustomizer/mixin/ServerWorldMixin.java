@@ -1,10 +1,12 @@
 package me.falu.seedcustomizer.mixin;
 
+import com.google.common.collect.ImmutableList;
 import me.falu.seedcustomizer.core.owner.ServerWorldCopyOwner;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryKey;
@@ -39,8 +41,6 @@ public abstract class ServerWorldMixin extends World implements ServerWorldCopyO
     @Shadow @Final private ServerWorldProperties worldProperties;
     @Shadow public abstract ServerChunkManager getChunkManager();
     @Shadow public abstract long getSeed();
-    @Shadow @Final private List<Spawner> field_25141;
-    @Shadow @Final private boolean field_25143;
     @Unique Executor workerExecutor;
 
     protected ServerWorldMixin(MutableWorldProperties mutableWorldProperties, RegistryKey<World> registryKey, RegistryKey<DimensionType> registryKey2, DimensionType dimensionType, Supplier<Profiler> profiler, boolean bl, boolean bl2, long l) {
@@ -59,7 +59,7 @@ public abstract class ServerWorldMixin extends World implements ServerWorldCopyO
         try (LevelStorage.Session session = levelStorage.createSession("ChunkRegenTemp")) {
             return new ServerWorld(
                     this.getServer(),
-                    this.workerExecutor,
+                    Util.getServerWorkerExecutor(),
                     session,
                     this.worldProperties,
                     this.getRegistryKey(),
@@ -70,11 +70,11 @@ public abstract class ServerWorldMixin extends World implements ServerWorldCopyO
                         @Override public void setChunkStatus(ChunkPos pos, @Nullable ChunkStatus status) {}
                         @Override public void stop() {}
                     },
-                    this.getChunkManager().getChunkGenerator().withSeed(this.getSeed()),
+                    this.getChunkManager().getChunkGenerator(),
                     this.isDebugWorld(),
                     this.getSeed(),
-                    this.field_25141,
-                    this.field_25143
+                    ImmutableList.of(),
+                    false
             );
         }
     }
