@@ -1,3 +1,6 @@
 accessWidener v1 named
 
 accessible field net/minecraft/server/world/ThreadedAnvilChunkStorage loadedChunks Lit/unimi/dsi/fastutil/longs/LongSet;
+accessible field net/minecraft/server/world/ServerChunkManager mainThreadExecutor Lnet/minecraft/server/world/ServerChunkManager$MainThreadExecutor;
+
+accessible method net/minecraft/server/world/ServerChunkManager$MainThreadExecutor executeTask (Ljava/lang/Runnable;)V
